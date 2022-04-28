@@ -1,5 +1,6 @@
 package com.tossinvest.internalthor.interfaces.notion
 
+import com.tossinvest.internalthor.interfaces.notion.dto.blocks.BlockDto
 import notion.api.v1.NotionClient
 import notion.api.v1.model.blocks.Block
 import notion.api.v1.model.blocks.BlockType.*
@@ -20,7 +21,10 @@ class NotionContoller(
     //블록아이디로 불러온다?
     @GetMapping("/blocks/{blockId}")
     fun getblocks(@PathVariable blockId: String) {
-        getContentsPage(blockId)
+        val item = getContentsPage(blockId)
+
+        val item2 = item.results.map { BlockDto.of(it) }
+
     }
 
 
@@ -36,7 +40,7 @@ class NotionContoller(
                 startCursor = blocks.nextCursor
             )
 
-            val mergedItem : MutableList<Block> = blocks.results.toMutableList()
+            val mergedItem: MutableList<Block> = blocks.results.toMutableList()
             mergedItem.addAll(nextItem.results)
 
             mergedItem.forEach {
